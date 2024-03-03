@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger Function</title>
+</head>
+
+<body>
+
+    <h1>{{a}}</h1>
+
+    <button id="submitButton">Submit</button>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script>
+
+        // Add event listener to the button
+        const options = {
+            method: 'GET',
+            url: '/predict/',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'                
+            }
+        };
+        // const axios = require("axios")
+        document.getElementById('submitButton').addEventListener('click', async function () {
+            // Send an asynchronous request to the backend
+
+
+            try {
+                const res = await axios.request(options)
+                if(!res){
+                    document.body.innerHTML = "Loading.....";
+                }
+                else{
+                   // document.body.innerHTML = res.data;
+                   console.log(res.data)
+                }
+                // console.log(res)
+                
+            } catch (error) {
+                console.log(error)
+            }
+            
+            // await fetch('/predict/', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'X-CSRFToken': '{{ csrf_token }}'  // Include CSRF token if needed
+            //     }
+            // })
+            //     .then(response => {
+            //         if (response.ok) {
+            //             return response.text(); // Process the response text
+            //         } else {
+            //             throw new Error('Request failed.');
+            //         }
+            //     })
+            //     .then(data => {
+            //         document.body.innerHTML = data;  // Log the response data
+            //     })
+            //     .catch(error => {
+            //         console.error('Error:', error);
+            //     });
+        });
+    </script>
+
+</body>
+
+</html>
