@@ -40,7 +40,7 @@ def predict(request):
         import warnings
         warnings.simplefilter(action="ignore", category=FutureWarning)
 
-        model_path = 'F:\django\playground\model\st_aapl_model.h5'
+        model_path = 'playground/model/st_aapl_model.h5'
         model = load_model(model_path)
 
         def collect_data(Symbol, start_date, end_date):
