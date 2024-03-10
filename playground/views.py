@@ -40,7 +40,7 @@ def predict(request):
         import warnings
         warnings.simplefilter(action="ignore", category=FutureWarning)
 
-        model_path = 'F:\django\playground\model\stock_prediction_model.h5'
+        model_path = 'F:\django\playground\model\st_aapl_model.h5'
         model = load_model(model_path)
 
         def collect_data(Symbol, start_date, end_date):
@@ -48,7 +48,7 @@ def predict(request):
             return stock_data
 
         # Test the function
-        df = collect_data('^GSPC', '2017-12-01', '2018-06-30')
+        df = collect_data('AAPL', '2021-01-01', '2023-12-30')
 
         def build_training_dataset(input_ds):
             # Create a new dataframe with only the 'Close column
