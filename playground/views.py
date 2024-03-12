@@ -48,7 +48,8 @@ def predict(request):
             return stock_data
 
         # Test the function
-        df = collect_data('AAPL', '2021-01-01', '2023-12-30')
+        
+        df = collect_data('AAPL', '2021-01-01', datetime.now())
 
         def build_training_dataset(input_ds):
             # Create a new dataframe with only the 'Close column
@@ -129,6 +130,9 @@ def predict(request):
 
 def predict_order(request):
     if request.method == 'GET':
+        price = int(request.GET.get('price'))  
+        amount = float(request.GET.get('amount'))
+        
         print("In order")
 
         BASE_URL = 'https://paper-api.alpaca.markets'
@@ -136,6 +140,17 @@ def predict_order(request):
         SECRET_KEY = 'a9K2vNpiToQXQsNkklhKgHLVfdfTLfKTuRtr0fVg'
         ORDERS_URL = '{}/v2/orders'.format(BASE_URL)
         HEADERS = {'APCA-API-KEY-ID': API_KEY, 'APCA-API-SECRET-KEY': SECRET_KEY}
+
+        def calculate_take_profit_and_stop_loss(price):
+            
+            take_profit = price * 1.2  # 20% above the actual price
+            stop_loss = price * 0.9  # 10% below the actual price
+
+            base_price = float(price)
+            stop_loss = min(stop_loss, base_price - 0.01)
+            return take_profit, stop_loss
+        
+        take_profit, stop_loss = calculate_take_profit_and_stop_loss(price)
         
         
         def create_order(pred_price,company,test_loss):
@@ -152,22 +167,22 @@ def predict_order(request):
             if side == 'buy':
                 order_details = MarketOrderRequest(
                                     symbol= company,
-                                    qty = 100,
+                                    qty = amount,
                                     side = OrderSide.BUY,
                                     time_in_force = TimeInForce.DAY,
                                     order_class = OrderClass.BRACKET,
-                                    take_profit=TakeProfitRequest(limit_price=190),
-                                    stop_loss=StopLossRequest(stop_price=170)
+                                    take_profit=TakeProfitRequest(limit_price=take_profit),
+                                    stop_loss=StopLossRequest(stop_price=stop_loss)
                                     )
             elif side == 'sell':
                 order_details = MarketOrderRequest(
                                     symbol= company,
-                                    qty = 100,
+                                    qty = price,
                                     side = OrderSide.SELL,
                                     time_in_force = TimeInForce.DAY,
                                     order_class = OrderClass.BRACKET,
-                                    take_profit=TakeProfitRequest(limit_price=170),
-                                    stop_loss=StopLossRequest(stop_price=190)
+                                    take_profit=TakeProfitRequest(limit_price=take_profit),
+                                    stop_loss=StopLossRequest(stop_price=stop_loss)
                                     )
             return order_details
 
