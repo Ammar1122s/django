@@ -36,7 +36,7 @@ def start(response):
 
 def predict(request):
     if request.method == 'GET':
-        print("ok")
+        stockName = request.GET.get('stockName')  
         import warnings
         warnings.simplefilter(action="ignore", category=FutureWarning)
 
@@ -49,7 +49,7 @@ def predict(request):
 
         # Test the function
         
-        df = collect_data('AAPL', '2021-01-01', datetime.now())
+        df = collect_data(stockName, '2021-01-01', datetime.now())
 
         def build_training_dataset(input_ds):
             # Create a new dataframe with only the 'Close column
@@ -142,7 +142,7 @@ def predict_order(request):
         HEADERS = {'APCA-API-KEY-ID': API_KEY, 'APCA-API-SECRET-KEY': SECRET_KEY}
 
         def calculate_take_profit_and_stop_loss(price):
-            
+
             take_profit = price * 1.2  # 20% above the actual price
             stop_loss = price * 0.9  # 10% below the actual price
 
