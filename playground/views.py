@@ -7,7 +7,7 @@ from keras.models import Sequential, Model
 # from keras.layers import Dense, LSTM, GRU, Concatenate, Input
 import tensorflow as tf
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
@@ -33,6 +33,32 @@ def say_hello(response):
 def start(response):
     return HttpResponse("Started!!!!")
 
+
+def get_data(request):
+    
+    stockName = request.GET.get('stockName')  
+    duration = request.GET.get('duration')
+    
+    if request.method == 'GET':
+        def collect_data(Symbol, start_date, end_date):
+            stock_data = yf.download(Symbol, start=start_date, end=end_date)
+            return stock_data
+
+        # Test the function
+        
+        current_date_time = datetime.now()
+        previous_days = current_date_time - timedelta(days=int(duration))
+        
+        df = collect_data(stockName, previous_days, current_date_time)
+        
+        df_close = df["Close"]
+        
+        data = df_close.values.tolist()
+        print(data)
+        return JsonResponse({'data': data})
+        
+        
+    
 
 def predict(request):
     if request.method == 'GET':

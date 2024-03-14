@@ -23,5 +23,6 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     re_path("^$", views.say_hello, name='start'),
     re_path("predict/",views.predict, name="predict"),
-    re_path("order/", views.predict_order, name="predict_order")
+    re_path("order/", views.predict_order, name="predict_order"),
+    re_path("getdata/", views.get_data, name="getdata")
 ]
