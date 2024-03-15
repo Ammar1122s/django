@@ -178,6 +178,8 @@ def predict_order(request):
         
         take_profit, stop_loss = calculate_take_profit_and_stop_loss(price)
         
+        print(take_profit, stop_loss)
+        
         
         def create_order(pred_price,company,test_loss):
             take_profit_price = 55
@@ -216,6 +218,7 @@ def predict_order(request):
         client = TradingClient(API_KEY, SECRET_KEY, paper=True)
         account = dict(client.get_account())
         order_details = create_order(225.123,'AAPL' , 10.5)
+        
 
         order = client.submit_order(order_data= order_details)
 
